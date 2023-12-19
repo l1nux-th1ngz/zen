@@ -1,4 +1,3 @@
-
 import tkinter as tk
 from tkinter import messagebox
 from tkcalendar import Calendar
@@ -50,8 +49,9 @@ class Window:
         cal.pack(side=tk.LEFT, padx=5, pady=5)  # Add space between border and calendar
 
     def message_boxes(self):
-        self.message1 = tk.Label(self.root, text="Copy to .config", bg='#FF00D0', anchor="w")  # Set label background color and anchor to left
-        self.message1.pack(fill="both", padx=5, pady=5)  # Add space between border and message box
+        self.copy_var = tk.IntVar()
+        self.message1 = tk.Checkbutton(self.root, text="Copy to .config", variable=self.copy_var, bg='#FF00D0', anchor="w")  # Set checkbox background color and anchor to left
+        self.message1.pack(fill="both", padx=5, pady=5)  # Add space between border and checkbox
 
     def binding(self):
         self.lst.bind("<Double-Button>", lambda x: delete(x, self))
