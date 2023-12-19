@@ -1,8 +1,3 @@
-import tkinter as tk
-from tkinter import messagebox
-from tkcalendar import Calendar
-from time import strftime
-
 class Window:
     def __init__(self):
         self.root = tk.Tk()
@@ -10,7 +5,7 @@ class Window:
         self.root.configure(bg='#00A5FF')  # Set background color
         self.widgets_builder()
         # Grab the saved data
-        getdata(self)
+        self.getdata()
         self.binding()
         self.root.mainloop()
 
@@ -58,50 +53,10 @@ class Window:
         self.entry.bind("<Return>", lambda x: add(x, self))
         self.root.bind("<Control-s>", lambda x: save(x, self))
 
-class PackageInstaller:
-    def __init__(self, window):
-        self.window = window
-
-    def copy_to_config(self):
-        if self.window.copy_var.get() == 1:
-            messagebox.showinfo("Copy to .config", "Directory copied to .config for faster and easier access.")
-
-    def show_calendar(self):
-        cal = Calendar(self.window.root, selectmode="day", year=2023, month=1, day=1, bg='#00A5FF', fg='white')
-        cal.pack()
-
-    def update_time(self):
-        string = strftime('%H:%M:%S %p')
-        self.window.time_label.config(text=string)
-        self.window.time_label.after(1000, self.update_time)
-
-# New functions for package list
-def add(event, window):
-    "add item to listbox with entry when Return is pressed"
-    window.lst.insert(tk.END, window.entry.get())
-    window.v.set("")
-    save("", window)
-
-def delete(event, window):
-    "deletes items in listbox with double click on item"
-    window.lst.delete(tk.ANCHOR)
-    save("", window)
-
-def save(event, window):
-    "saves memos in listbox"
-    with open("data.txt", "w") as file:
-        file.write("\n".join(window.lv.get()))
-    window.label["text"] = "Data saved"
-
-def getdata(window):
-    "grab saved data"
-    if "data.txt" in os.listdir():
-        with open("data.txt") as file:
-            for line in file:
-                window.lst.insert(tk.END, line.strip())
-
-if __name__ == "__main__":
-    app_window = Window()
-    package_installer = PackageInstaller(app_window)
-    app_window.update_time()
-    app_window.root.mainloop()
+    def getdata(self):
+        "grab saved data"
+        filepath = os.path.join(os.path.dirname(__file__), "data.txt")  # Specify the correct path to data.txt
+        if os.path.exists(filepath):
+            with open(filepath) as file:
+                for line in file:
+                    self.lst.insert(tk.END, line.strip())
