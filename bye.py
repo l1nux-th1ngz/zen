@@ -1,3 +1,7 @@
+import os
+import tkinter as tk
+from tkcalendar import Calendar  # Assuming you are using the tkcalendar module
+
 class Window:
     def __init__(self):
         self.root = tk.Tk()
@@ -49,9 +53,9 @@ class Window:
         self.message1.pack(fill="both", padx=5, pady=5)  # Add space between border and checkbox
 
     def binding(self):
-        self.lst.bind("<Double-Button>", lambda x: delete(x, self))
-        self.entry.bind("<Return>", lambda x: add(x, self))
-        self.root.bind("<Control-s>", lambda x: save(x, self))
+        self.lst.bind("<Double-Button>", lambda x: self.delete(x))
+        self.entry.bind("<Return>", lambda x: self.add(x))
+        self.root.bind("<Control-s>", lambda x: self.save(x))
 
     def getdata(self):
         "grab saved data"
@@ -60,3 +64,25 @@ class Window:
             with open(filepath) as file:
                 for line in file:
                     self.lst.insert(tk.END, line.strip())
+
+    # Placeholder functions (replace with your actual implementations)
+    def delete(self, event):
+        selected_item = self.lst.curselection()
+        if selected_item:
+            self.lst.delete(selected_item[0])
+
+    def add(self, event):
+        item_to_add = self.entry.get()
+        if item_to_add:
+            self.lst.insert(tk.END, item_to_add)
+            self.v.set("")  # Clear the entry field
+            self.save(event)
+
+    def save(self, event):
+        filepath = os.path.join(os.path.dirname(__file__), "data.txt")
+        with open(filepath, "w") as file:
+            for item in self.lst.get(0, tk.END):
+                file.write(item + "\n")
+
+# Create an instance of the Window class
+app_window = Window()
