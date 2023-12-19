@@ -30,7 +30,7 @@ class Window:
 
     def entry1(self):
         self.v = tk.StringVar()
-        self.entry = tk.Entry(self.root, textvariable=self.v, font=24)
+        self.entry = tk.Entry(self.root, textvariable=self.v, font=('Helvetica', 10))
         self.entry.pack(fill="both", padx=5, pady=5)  # Add space between border and entry box
         self.entry.focus()
 
