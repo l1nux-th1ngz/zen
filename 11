@@ -1,0 +1,51 @@
+#!/bin/bash
+
+# Define the package list file
+pkglist_file="pkglist.txt"
+
+# Create pkglist file if it doesn't exist
+touch "$pkglist_file"
+
+# Get packages from the pkglist file
+pkglist=$(cat "$pkglist_file")
+
+# Create a Yad dialog with buttons
+form=$(yad --title "Package Installation" \
+    --form \
+    --field="Enter additional packages to install::TXT" \
+    --field="Enter Git repositories to clone::TXT" \
+    --field="Install Packages!B":fbtn "bash -c 'echo %1 >> $pkglist_file && echo Packages added to list'" \
+    --field="Clone Git Repositories!B":fbtn "bash -c 'echo Cloning... && sleep 2 && echo Done.'" \
+    --field="View AUR!B":fbtn "xdg-open https://aur.archlinux.org" \
+    --separator="," \
+    --borders=10)
+
+# Parse the form output
+IFS=',' read -ra fields <<< "$form"
+
+# Check if the Install button was clicked
+if [[ ${fields[2]} == TRUE ]]; then
+    # Append the new input to the existing pkglist
+    echo "${fields[0]}" >> "$pkglist_file"
+
+    # Function to display progress using Yad
+    function show_progress() {
+        (
+        # Your progress bar logic goes here...
+        echo "50"
+        echo "# We Are At The Half 50/50 Point => %50." ; sleep 0.2
+        echo "75"
+        echo "# 3/4 Are You Getting Excited yet => %75." ; sleep 0.4
+        echo "# You Are All Done!!!" ; sleep 0.5
+        ) | yad --progress --text="Working on your downloads..." --percentage=0 --auto-close --auto-kill
+    }
+
+    # Call the progress function
+    show_progress
+
+    # Additional logic or messages after completion
+    yad --info --width=870 --height=650 --text "Do you want to copy and link this directory in the .config for easier access and configuration?" \
+        --button="Yes:0" \
+        --button="Ask Me Later:1" \
+        --button="No:2"
+fi
