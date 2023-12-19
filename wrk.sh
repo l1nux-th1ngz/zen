@@ -1,8 +1,12 @@
 #!/bin/bash
 
-# Get packages from the pkglist file
 pkglist_file="pkglist.txt"
-pkglist=$(cat "$pkglist_file" 2>/dev/null)
+
+# Create pkglist file if it doesn't exist
+touch "$pkglist_file"
+
+# Get packages from the pkglist file
+pkglist=$(cat "$pkglist_file")
 
 # Get additional packages to install using Zenity
 packages_input=$(zenity --entry --title="Package Installation" --text="Enter additional packages to install:" --entry-text="$pkglist")
@@ -11,9 +15,6 @@ packages_input=$(zenity --entry --title="Package Installation" --text="Enter add
 if [ -n "$packages_input" ]; then
     # Append the new input to the existing pkglist
     echo "$packages_input" >> "$pkglist_file"
-
-    # Split the input into an array of packages
-    IFS=' ' read -ra packages <<< "$packages_input"
 
     # Function to display progress using Zenity
     function show_progress() {
